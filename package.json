@@ -1,0 +1,48 @@
+{
+  "name": "mcp-billing-server",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for querying Stripe and Cloudflare billing data. Safe for agents.",
+  "type": "module",
+  "bin": {
+    "mcp-billing-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "billing",
+    "stripe",
+    "cloudflare",
+    "agents"
+  ],
+  "author": "Dmitry Alexeenko",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dalexeenko/mcp-billing-server.git"
+  },
+  "engines": {
+    "node": ">=20.12"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "cloudflare": "^4.0.0",
+    "stripe": "^17.5.0",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
