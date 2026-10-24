@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import { z } from "zod";
-import type { ToolDef } from "../types.js";
+import { defineTool, type ToolDef } from "../types.js";
 
 let client: Stripe | null = null;
 
@@ -20,7 +20,7 @@ function getClient(): Stripe {
 const limitSchema = z.number().int().min(1).max(100).default(20);
 
 export const stripeTools: ToolDef[] = [
-  {
+  defineTool({
     name: "stripe_list_customers",
     description: "List Stripe customers. Optionally filter by email.",
     inputSchema: z.object({
@@ -31,14 +31,14 @@ export const stripeTools: ToolDef[] = [
       const res = await getClient().customers.list({ email, limit });
       return res.data;
     },
-  },
-  {
+  }),
+  defineTool({
     name: "stripe_get_customer",
     description: "Get a single Stripe customer by ID.",
     inputSchema: z.object({ id: z.string().startsWith("cus_") }),
     handler: async ({ id }) => getClient().customers.retrieve(id),
-  },
-  {
+  }),
+  defineTool({
     name: "stripe_list_invoices",
     description: "List Stripe invoices. Filter by customer and/or status.",
     inputSchema: z.object({
@@ -52,14 +52,14 @@ export const stripeTools: ToolDef[] = [
       const res = await getClient().invoices.list({ customer, status, limit });
       return res.data;
     },
-  },
-  {
+  }),
+  defineTool({
     name: "stripe_get_invoice",
     description: "Get a single Stripe invoice by ID.",
     inputSchema: z.object({ id: z.string().startsWith("in_") }),
     handler: async ({ id }) => getClient().invoices.retrieve(id),
-  },
-  {
+  }),
+  defineTool({
     name: "stripe_list_subscriptions",
     description: "List Stripe subscriptions. Filter by customer and/or status.",
     inputSchema: z.object({
@@ -86,8 +86,8 @@ export const stripeTools: ToolDef[] = [
       });
       return res.data;
     },
-  },
-  {
+  }),
+  defineTool({
     name: "stripe_list_charges",
     description: "List Stripe charges. Filter by customer.",
     inputSchema: z.object({
@@ -98,12 +98,12 @@ export const stripeTools: ToolDef[] = [
       const res = await getClient().charges.list({ customer, limit });
       return res.data;
     },
-  },
-  {
+  }),
+  defineTool({
     name: "stripe_get_balance",
     description:
       "Get the current Stripe account balance (available + pending per currency).",
     inputSchema: z.object({}),
     handler: async () => getClient().balance.retrieve(),
-  },
+  }),
 ];
