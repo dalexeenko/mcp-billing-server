@@ -3,7 +3,7 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { zodToJsonSchema } from "zod-to-json-schema";
+import { z } from "zod";
 import { stripeTools } from "./providers/stripe.js";
 import { cloudflareTools } from "./providers/cloudflare.js";
 import type { ToolDef } from "./types.js";
@@ -21,7 +21,7 @@ export function createServer(): Server {
     tools: allTools.map((t) => ({
       name: t.name,
       description: t.description,
-      inputSchema: zodToJsonSchema(t.inputSchema, { target: "openApi3" }),
+      inputSchema: z.toJSONSchema(t.inputSchema, { target: "openapi-3.0", io: "input" }),
     })),
   }));
 
@@ -34,8 +34,7 @@ export function createServer(): Server {
       };
     }
     try {
-      const parsed = tool.inputSchema.parse(req.params.arguments ?? {});
-      const result = await tool.handler(parsed);
+      const result = await tool.handler(req.params.arguments ?? {});
       return {
         content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
       };

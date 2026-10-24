@@ -1,6 +1,6 @@
 import Cloudflare from "cloudflare";
 import { z } from "zod";
-import type { ToolDef } from "../types.js";
+import { defineTool, type ToolDef } from "../types.js";
 
 let client: Cloudflare | null = null;
 
@@ -18,7 +18,7 @@ function getClient(): Cloudflare {
 }
 
 export const cloudflareTools: ToolDef[] = [
-  {
+  defineTool({
     name: "cloudflare_list_account_subscriptions",
     description: "List all subscriptions on a Cloudflare account.",
     inputSchema: z.object({
@@ -28,8 +28,8 @@ export const cloudflareTools: ToolDef[] = [
       const page = await getClient().accounts.subscriptions.get({ account_id });
       return page.result;
     },
-  },
-  {
+  }),
+  defineTool({
     name: "cloudflare_get_zone_subscription",
     description: "Get the subscription details for a specific zone.",
     inputSchema: z.object({
@@ -37,8 +37,8 @@ export const cloudflareTools: ToolDef[] = [
     }),
     handler: async ({ zone_id }) =>
       getClient().zones.subscriptions.get({ zone_id }),
-  },
-  {
+  }),
+  defineTool({
     name: "cloudflare_get_user_subscriptions",
     description:
       "Get user-level (legacy) subscriptions for the API token's user.",
@@ -47,8 +47,8 @@ export const cloudflareTools: ToolDef[] = [
       const page = await getClient().user.subscriptions.get();
       return page.result;
     },
-  },
-  {
+  }),
+  defineTool({
     name: "cloudflare_list_billing_history",
     description:
       "List the user's billing history (charges, refunds, prorations, plan changes). Each item has amount, currency, description, type, action, occurred_at, and zone. Use this to answer 'why was I charged?', detect potential double charges, see outstanding balances over time, and reconcile against subscriptions. Note: backed by a deprecated Cloudflare API that remains live as of 2026; no replacement is currently exposed in the public SDK.",
@@ -81,5 +81,5 @@ export const cloudflareTools: ToolDef[] = [
       });
       return res.result;
     },
-  },
+  }),
 ];
